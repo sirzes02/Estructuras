@@ -1,5 +1,5 @@
 *
 
-!.vscose/
+!.vscode/
 !*.cpp
 !.gitignore

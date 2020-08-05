@@ -63,19 +63,27 @@ void menu()
                     printf("\n\n");
                 }
             } while (bandera);
+
             insertarNodo(raiz, dato, NULL);
+
             break;
         case 2:
             mostrarNodo(raiz, 0);
+
             break;
         case 3:
             printf("\nIngrese elemento a buscar:\n");
             scanf("%d", &dato);
 
             if (busquedaNodo(raiz, dato))
+            {
                 printf("ELEMENTO %d ENCONTRADO.\n", dato);
+            }
             else
+            {
                 printf("ELEMENTO NO ENCONTRADO.\n");
+            }
+
             break;
         case 4:
             do
@@ -90,20 +98,24 @@ void menu()
                     printf("\n\n");
                 }
             } while (!bandera);
+
             eliminarNodo(raiz, dato);
+
             break;
         case 5:
             preOrden(raiz);
+
             break;
         case 6:
             inOrden(raiz);
+
             break;
         case 7:
             postOrden(raiz);
+
             break;
         case 8:
             return;
-            break;
         default:
             printf("\nERROR...");
         }
@@ -116,14 +128,21 @@ void menu()
 void insertarNodo(Nodo *&raiz, int dato, Nodo *padre)
 {
     if (!raiz)
+    {
         raiz = crear(dato, padre);
+    }
     else
     {
         int valorRaiz = raiz->dato;
+
         if (dato < valorRaiz)
+        {
             insertarNodo(raiz->izquierda, dato, raiz);
+        }
         else
+        {
             insertarNodo(raiz->derecha, dato, raiz);
+        }
     }
 }
 
@@ -142,13 +161,17 @@ Nodo *crear(int dato, Nodo *padre)
 void mostrarNodo(Nodo *raiz, int contador)
 {
     if (!raiz)
+    {
         return;
+    }
     else
     {
         mostrarNodo(raiz->derecha, contador + 1);
 
         for (int i = 0; i < contador; i++)
+        {
             printf("   ");
+        }
 
         printf("%d\n", raiz->dato);
         mostrarNodo(raiz->izquierda, contador + 1);
@@ -158,13 +181,21 @@ void mostrarNodo(Nodo *raiz, int contador)
 Nodo *busquedaNodo(Nodo *raiz, int dato)
 {
     if (!raiz)
+    {
         return NULL;
+    }
     else if (raiz->dato == dato)
+    {
         return raiz;
+    }
     else if (dato < raiz->dato)
+    {
         return busquedaNodo(raiz->izquierda, dato);
+    }
     else
+    {
         return busquedaNodo(raiz->derecha, dato);
+    }
 }
 
 void eliminarNodo(Nodo *raiz, int dato)
@@ -179,55 +210,58 @@ void eliminarNodo(Nodo *raiz, int dato)
     if (!encontrado->derecha && !encontrado->izquierda)
     {
         padre = encontrado->padre;
+
         if (padre->derecha == encontrado)
         {
             padre->derecha = NULL;
-            free(encontrado);
         }
         else
         {
             padre->izquierda = NULL;
-            free(encontrado);
         }
     }
     else if (encontrado->derecha && encontrado->izquierda)
+    {
         padre = encontrado->padre;
+    }
     else if (encontrado->derecha)
     {
         derecha = encontrado->derecha;
         padre = encontrado->padre;
+
         if (padre->derecha == encontrado)
         {
             padre->derecha = derecha;
-            free(encontrado);
         }
         else
         {
             padre->izquierda = derecha;
-            free(encontrado);
         }
     }
     else
     {
         izquierda = encontrado->izquierda;
         padre = encontrado->padre;
+
         if (padre->derecha == encontrado)
         {
             padre->derecha = izquierda;
-            free(encontrado);
         }
         else
         {
             padre->izquierda = izquierda;
-            free(encontrado);
         }
     }
+
+    free(encontrado);
 }
 
 void preOrden(Nodo *raiz)
 {
     if (!raiz)
+    {
         return;
+    }
     else
     {
         printf("%d\t<< - >>\t");
@@ -239,7 +273,9 @@ void preOrden(Nodo *raiz)
 void inOrden(Nodo *raiz)
 {
     if (!raiz)
+    {
         return;
+    }
     else
     {
         preOrden(raiz->izquierda);
@@ -251,7 +287,9 @@ void inOrden(Nodo *raiz)
 void postOrden(Nodo *raiz)
 {
     if (!raiz)
+    {
         return;
+    }
     else
     {
         preOrden(raiz->izquierda);
@@ -263,9 +301,13 @@ void postOrden(Nodo *raiz)
 /*
 bool comparar(Nodo *raiz_1, Nodo *raiz_2){
 	if(raiz_1 == raiz_2)
+    {
 		return true;
-	if(raiz_1 == NULL || raiz_2 == NULL)
+	}
+    if(raiz_1 == NULL || raiz_2 == NULL)
+    {
 		return false;
+    }
 	return (raiz_1->dato == raiz_2->dato && comparar(raiz_1->derecha, raiz_2->derecha) && comparar(raiz_1->izquierda, raiz_2->izquierda));
 }
 */
