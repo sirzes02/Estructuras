@@ -7,19 +7,16 @@
 struct Node
 {
     char idPerson[24];
-    char namePerson[24];
-    short agePerson;
 
     struct Node *next;
 } * list;
 
 // Function prototypes
 void menu();
-void insert();
+void insert(char[24]);
 void show();
-void update();
-void searchByAge();
-void remove();
+void update(char[24]);
+void remove(char[24]);
 void error();
 struct Node *searchId(char[24]);
 
@@ -36,9 +33,8 @@ int main(void)
         printf("1. Insert person.\n");
         printf("2. Show people.\n");
         printf("3. Update Person.\n");
-        printf("4. Search Person by age.\n");
-        printf("5. Delete Person.\n");
-        printf("6. Exit.\n");
+        printf("4. Delete Person.\n");
+        printf("5. Exit.\n");
         printf("Choose a option:\n");
         scanf("%hi", &option);
 
@@ -47,40 +43,70 @@ int main(void)
         switch (option)
         {
         case 1:
-            insert();
+            char auxId[24];
+
+            printf("Insert a id:\n");
+            scanf("%s", auxId);
+
+            insert(auxId);
             break;
         case 2:
-            show();
+            // If the list isn't empty
+            if (list)
+            {
+                show();
+            }
+            else
+            {
+                printf("The list is empty.\n\n");
+            }
             break;
         case 3:
-            update();
+            // If the list isn't empty
+            if (list)
+            {
+                char aux[24];
+
+                printf("Insert the person's id to update.\n");
+                scanf("%s", aux);
+
+                update(aux);
+            }
+            else
+            {
+                printf("The list is empty.\n\n");
+            }
             break;
         case 4:
-            searchByAge();
+            // If the list isn't empty
+            if (list)
+            {
+                char aux[24];
+
+                printf("Insert the person's id to update.\n");
+                scanf("%s", aux);
+
+                remove(aux);
+            }
+            else
+            {
+                printf("The list is empty.\n\n");
+            }
             break;
         case 5:
-            remove();
-            break;
-        case 6:
             break;
         default:
             printf("\nWrong data, please try again.\n");
-            break;
         }
 
         system("read -p 'Press Enter to continue...' var");
-    } while (option != 6);
+    } while (option != 5);
 
     return EXIT_SUCCESS;
 }
 
-void insert()
+void insert(char auxId[24])
 {
-    char auxId[24];
-
-    printf("Insert a id:\n");
-    scanf("%s", auxId);
-
     // If doesn't exist a Node with the ID
     if (!searchId(auxId))
     {
@@ -88,17 +114,8 @@ void insert()
 
         // Copy the auxId content in the properti of the Node
         strcpy(newPerson->idPerson, auxId);
-        printf("Insert the name:\n");
-        scanf("%s", newPerson->namePerson);
-        printf("Insert the age:\n");
-        scanf("%hi", &newPerson->agePerson);
-        while (newPerson->agePerson < 0 || newPerson->agePerson > 100)
-        {
-            error();
-            printf("Insert the age:\n");
-            scanf("%hi", &newPerson->agePerson);
-        }
 
+        /////////////////////////////
         // If the list is empty
         if (!list)
         {
@@ -111,6 +128,7 @@ void insert()
             list = newPerson;
             list->next = aux;
         }
+        //////////////////////////////
     }
     else
     {
@@ -120,183 +138,84 @@ void insert()
 
 void show()
 {
-    // If the list isn't empty
-    if (list)
-    {
-        struct Node *current = list;
+    ///////////////////////////////////////////////////////
+    struct Node *current = list;
 
-        while (current)
-        {
-            printf("The id: %s.\n", current->idPerson);
-            printf("The name: %s.\n", current->namePerson);
-            printf("The age: %hi.\n\n\n", current->agePerson);
-
-            current = current->next;
-        }
-    }
-    else
+    while (current)
     {
-        printf("The list is empty.\n\n");
+        printf("The id: %s.\n", current->idPerson);
+
+        current = current->next;
     }
+    ///////////////////////////////////////////////////////
 }
 
-void update()
+void update(char aux[24])
 {
-    // If the list isn't empty
-    if (list)
+    struct Node *searchPerson = searchId(aux);
+    char auxNew[24];
+
+    // If the person with the ID exists
+    if (searchPerson)
     {
-        short option;
-        char aux[24];
+        printf("\n\nInsert the new id:\n");
+        scanf("%s", auxNew);
 
-        printf("Insert the person's id to update.\n");
-        scanf("%s", aux);
-
-        struct Node *searchPerson = searchId(aux);
-
-        // If the person with the ID exists
-        if (searchPerson)
+        if (!searchId(auxNew))
         {
-            do
-            {
-                system("clear");
-
-                printf("Update menu:\n");
-                printf("1. Name.\n");
-                printf("2. Age.\n");
-                printf("3. Exit.\n");
-                scanf("%hi", &option);
-
-                switch (option)
-                {
-                case 1:
-                    printf("\n\nInsert the new name:\n");
-                    scanf("%s", searchPerson->namePerson);
-                    break;
-                case 2:
-                    printf("\n\nInsert the new age:\n");
-                    scanf("%hi", &searchPerson->agePerson);
-                    while (searchPerson->agePerson < 0 || searchPerson->agePerson > 100)
-                    {
-                        error();
-                        printf("\n\nInsert the new age:\n");
-                        scanf("%hi", &searchPerson->agePerson);
-                    }
-                    break;
-                case 3:
-                    return;
-                default:
-                    error();
-                }
-                printf("\n");
-                system("read -p 'Press Enter to continue...' var");
-            } while (true);
+            strcpy(searchPerson->idPerson, auxNew);
         }
         else
         {
-            printf("Exist no one person with the id %s.\n\n", aux);
+            printf("Already exist a person with this id %s.\n\n", aux);
         }
     }
     else
     {
-        printf("The list is empty.\n\n");
+        printf("Exist no one person with the id %s.\n\n", aux);
     }
 }
 
-void searchByAge()
+void remove(char aux[24])
 {
-    // If the list isn't empty
-    if (list)
+
+    struct Node *searchPerson = searchId(aux);
+
+    // If the person with the ID exists
+    if (searchPerson)
     {
-        struct Node *current = list;
-        short age;
-        bool flag = false;
-
-        printf("Insert the age to search:\n");
-        scanf("%hi", &age);
-        while (age < 0 || age > 100)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // If the Node is the first one
+        if (searchPerson == list)
         {
-            error();
-            printf("Insert the age to search:\n");
-            scanf("%hi", &age);
-        }
-
-        system("clear");
-
-        printf("%hi years old are:\n\n", age);
-        while (current)
-        {
-            if (current->agePerson == age)
-            {
-                printf("The person's id: %s.\n", current->idPerson);
-                printf("The person's name: %s.\n", current->namePerson);
-                printf("The person's age: %hi.\n\n\n", current->agePerson);
-
-                flag = true;
-            }
-            current = current->next;
-        }
-
-        if (!flag)
-        {
-            printf("0.\n\n");
-        }
-    }
-    else
-    {
-        printf("The list is empty.\n\n");
-    }
-}
-
-void remove()
-{
-    // If the list isn't empty
-    if (list)
-    {
-        char aux[24];
-
-        printf("Insert the person's id to update.\n");
-        scanf("%s", aux);
-
-        struct Node *searchPerson = searchId(aux);
-
-        // If the person with the ID exists
-        if (searchPerson)
-        {
-            // If the Node is the first one
-            if (searchPerson == list)
-            {
-                struct Node *aux = new struct Node();
-                aux = list->next;
-                list = aux;
-            }
-            else
-            {
-                struct Node *current = list;
-                // This variable will be used as an auxiliary to save the node immediately previous the current one
-                struct Node *before = new struct Node();
-
-                while (current)
-                {
-                    // If the ID of the current Node is equals to auxID
-                    if (strcmp(aux, current->idPerson) == 0)
-                    {
-                        before->next = current->next;
-                        break;
-                    }
-                    before = current;
-                    current = current->next;
-                }
-            }
-            free(searchPerson);
+            struct Node *aux = new struct Node();
+            aux = list->next;
+            list = aux;
         }
         else
         {
-            printf("Exist no one person with the id %s.\n\n", aux);
+            struct Node *current = list;
+            // This variable will be used as an auxiliary to save the node immediately previous the current one
+            struct Node *before = new struct Node();
+
+            while (current)
+            {
+                // If the ID of the current Node is equals to auxID
+                if (strcmp(aux, current->idPerson) == 0)
+                {
+                    before->next = current->next;
+                    break;
+                }
+                before = current;
+                current = current->next;
+            }
         }
+        free(searchPerson);
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
     else
     {
-        printf("The list is empty.\n\n");
+        printf("Exist no one person with the id %s.\n\n", aux);
     }
 }
 
