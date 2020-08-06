@@ -8,8 +8,8 @@ struct Node
 {
 	char idPerson[24];
 
-	struct Node *next;
-	struct Node *before;
+	Node *next;
+	Node *before;
 } * tile, *head;
 
 // Function prototypes
@@ -19,7 +19,7 @@ void show(short);
 void update(char[24]);
 void remove(char[24]);
 void error();
-struct Node *searchId(char[24]);
+Node *search(char[24]);
 
 // Functions
 int main(void)
@@ -124,10 +124,10 @@ int main(void)
 void insert(char auxId[24])
 {
 	// If doesn't exist a Node with the ID
-	if (!searchId(auxId))
+	if (!search(auxId))
 	{
 		///////////////////////////////////////////////////////
-		struct Node *newPerson = new Node;
+		Node *newPerson = new Node;
 
 		// Copy the auxId content in the properti of the Node
 		strcpy(newPerson->idPerson, auxId);
@@ -159,7 +159,7 @@ void show(short option)
 {
 	////////////////////////////////////////////////////////////////////
 	// If the parameter is 0, the travel is ASC else DSC
-	struct Node *current = option == 0 ? head : tile;
+	Node *current = option == 0 ? head : tile;
 
 	while (current)
 	{
@@ -173,7 +173,7 @@ void show(short option)
 
 void update(char aux[24])
 {
-	struct Node *searchPerson = searchId(aux);
+	Node *searchPerson = search(aux);
 	char auxNew[24];
 
 	// If the person with the ID exists
@@ -182,7 +182,7 @@ void update(char aux[24])
 		printf("\n\nInsert the new id:\n");
 		scanf("%s", auxNew);
 
-		if (!searchId(auxNew))
+		if (!search(auxNew))
 		{
 			strcpy(searchPerson->idPerson, auxNew);
 		}
@@ -199,7 +199,7 @@ void update(char aux[24])
 
 void remove(char aux[24])
 {
-	struct Node *searchPerson = searchId(aux);
+	Node *searchPerson = search(aux);
 
 	// If the person with the ID exists
 	if (searchPerson)
@@ -246,9 +246,9 @@ void error()
 	system("clear");
 }
 
-struct Node *searchId(char auxId[24])
+Node *search(char auxId[24])
 {
-	struct Node *current = head;
+	Node *current = head;
 
 	while (current)
 	{

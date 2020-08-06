@@ -8,7 +8,7 @@ struct Node
 {
     char idPerson[24];
 
-    struct Node *next;
+    Node *next;
 } * list;
 
 // Function prototypes
@@ -18,7 +18,7 @@ void show();
 void update(char[24]);
 void remove(char[24]);
 void error();
-struct Node *searchId(char[24]);
+Node *search(char[24]);
 
 // Functions
 int main(void)
@@ -108,9 +108,9 @@ int main(void)
 void insert(char auxId[24])
 {
     // If doesn't exist a Node with the ID
-    if (!searchId(auxId))
+    if (!search(auxId))
     {
-        struct Node *newPerson = new Node;
+        Node *newPerson = new Node;
 
         // Copy the auxId content in the properti of the Node
         strcpy(newPerson->idPerson, auxId);
@@ -124,7 +124,7 @@ void insert(char auxId[24])
         }
         else
         {
-            struct Node *aux = list;
+            Node *aux = list;
             list = newPerson;
             list->next = aux;
         }
@@ -139,7 +139,7 @@ void insert(char auxId[24])
 void show()
 {
     ///////////////////////////////////////////////////////
-    struct Node *current = list;
+    Node *current = list;
 
     while (current)
     {
@@ -152,7 +152,7 @@ void show()
 
 void update(char aux[24])
 {
-    struct Node *searchPerson = searchId(aux);
+    Node *searchPerson = search(aux);
     char auxNew[24];
 
     // If the person with the ID exists
@@ -161,7 +161,7 @@ void update(char aux[24])
         printf("\n\nInsert the new id:\n");
         scanf("%s", auxNew);
 
-        if (!searchId(auxNew))
+        if (!search(auxNew))
         {
             strcpy(searchPerson->idPerson, auxNew);
         }
@@ -179,7 +179,7 @@ void update(char aux[24])
 void remove(char aux[24])
 {
 
-    struct Node *searchPerson = searchId(aux);
+    Node *searchPerson = search(aux);
 
     // If the person with the ID exists
     if (searchPerson)
@@ -188,15 +188,15 @@ void remove(char aux[24])
         // If the Node is the first one
         if (searchPerson == list)
         {
-            struct Node *aux = new struct Node();
+            Node *aux = new Node();
             aux = list->next;
             list = aux;
         }
         else
         {
-            struct Node *current = list;
+            Node *current = list;
             // This variable will be used as an auxiliary to save the node immediately previous the current one
-            struct Node *before = new struct Node();
+            Node *before = new Node();
 
             while (current)
             {
@@ -226,9 +226,9 @@ void error()
     system("clear");
 }
 
-struct Node *searchId(char auxId[24])
+Node *search(char auxId[24])
 {
-    struct Node *current = list;
+    Node *current = list;
 
     while (current)
     {

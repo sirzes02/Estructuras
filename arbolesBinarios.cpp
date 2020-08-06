@@ -1,25 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Nodo
+struct Node
 {
-    int dato;
+    int data;
 
-    Nodo *padre;
-    Nodo *derecha;
-    Nodo *izquierda;
+    Node *father;
+    Node *right;
+    Node *left;
 };
 
-Nodo *crear(int, Nodo *);
-Nodo *busquedaNodo(Nodo *, int);
-//bool comparar(Nodo *, Nodo *);
-void insertarNodo(Nodo *&, int, Nodo *);
-void mostrarNodo(Nodo *, int);
-void eliminarNodo(Nodo *, int);
-void preOrden(Nodo *);
-void inOrden(Nodo *);
-void postOrden(Nodo *);
 void menu();
+void insert(Node *&, int, Node *);
+Node *create(int, Node *);
+void show(Node *, int);
+void remove(Node *);
+Node *foundLeft(Node *);
+Node *search(Node *, int);
+void preOrder(Node *);
+void inOrder(Node *);
+void postOrder(Node *);
+//bool compare(Node *, Node *);
+void error();
 
 int main(void)
 {
@@ -29,285 +31,288 @@ int main(void)
 
 void menu()
 {
-    Nodo *raiz = NULL;
-    bool bandera;
-    short opc;
-    int dato;
+    Node *root = NULL;
+    bool flag;
+    short option;
+    int data;
 
     do
     {
-        printf("Menu\n");
-        printf("1. Insertar nuevo nodo.\n");
-        printf("2. Mostrar arbol.\n");
-        printf("3. Buscar elementos.\n");
-        printf("4. Eliminar nodos.\n");
-        printf("5. Recorrido pre-orden.\n");
-        printf("6. Recorrido in-orden.\n");
-        printf("7. Recorrido post-orden.\n");
-        printf("8. Salir.\n");
-        printf("Escoja:\n");
-        scanf("%hi", &opc);
+        system("clear");
 
-        switch (opc)
+        printf("Menu\n");
+        printf("1. Insert.\n");
+        printf("2. Show.\n");
+        printf("3. Remove.\n");
+        printf("4. Show pre-order.\n");
+        printf("5. Show in-order.\n");
+        printf("6. Show post-order.\n");
+        printf("7. Exit.\n");
+        printf("Escoja:\n");
+        scanf("%hi", &option);
+
+        system("clear");
+
+        switch (option)
         {
         case 1:
-            do
+            printf("\nInsert new element:\n");
+            scanf("%d", &data);
+
+            if (!search(root, data))
             {
-                printf("\nIngrese nuevo elemento:\n");
-                scanf("%d", &dato);
-                bandera = busquedaNodo(raiz, dato);
-                if (bandera)
-                {
-                    printf("Error, este elemento ya existe.\n\n");
-                    system("PAUSE");
-                    printf("\n\n");
-                }
-            } while (bandera);
-
-            insertarNodo(raiz, dato, NULL);
-
-            break;
-        case 2:
-            mostrarNodo(raiz, 0);
-
-            break;
-        case 3:
-            printf("\nIngrese elemento a buscar:\n");
-            scanf("%d", &dato);
-
-            if (busquedaNodo(raiz, dato))
-            {
-                printf("ELEMENTO %d ENCONTRADO.\n", dato);
+                insert(root, data, NULL);
             }
             else
             {
-                printf("ELEMENTO NO ENCONTRADO.\n");
+                error();
+            }
+
+            break;
+        case 2:
+            show(root, 0);
+
+            break;
+        case 3:
+            printf("\nInsert element to remove:\n");
+            scanf("%d", &data);
+
+            // This would be the best way, but i have a problem... jeje
+            //Node *toRemove = search(root, data);
+
+            if (search(root, data))
+            {
+                remove(search(root, data));
+            }
+            else
+            {
+                error();
             }
 
             break;
         case 4:
-            do
-            {
-                printf("\nIngrese nuevo elemento:\n");
-                scanf("%d", &dato);
-                bandera = busquedaNodo(raiz, dato);
-                if (!bandera)
-                {
-                    printf("Error, este elemento NO existe.\n\n");
-                    system("PAUSE");
-                    printf("\n\n");
-                }
-            } while (!bandera);
-
-            eliminarNodo(raiz, dato);
+            preOrder(root);
 
             break;
         case 5:
-            preOrden(raiz);
+            inOrder(root);
 
             break;
         case 6:
-            inOrden(raiz);
+            postOrder(root);
 
             break;
         case 7:
-            postOrden(raiz);
-
-            break;
-        case 8:
             return;
         default:
             printf("\nERROR...");
         }
-        printf("\n");
-        system("PAUSE");
-        system("cls");
-    } while (true);
+
+        system("read -p 'Press Enter to continue...' var");
+    } while (option != 7);
 }
 
-void insertarNodo(Nodo *&raiz, int dato, Nodo *padre)
+void insert(Node *&root, int data, Node *father)
 {
-    if (!raiz)
+    if (!root)
     {
-        raiz = crear(dato, padre);
+        root = create(data, father);
     }
     else
     {
-        int valorRaiz = raiz->dato;
-
-        if (dato < valorRaiz)
+        if (data < root->data)
         {
-            insertarNodo(raiz->izquierda, dato, raiz);
+            insert(root->left, data, root);
         }
         else
         {
-            insertarNodo(raiz->derecha, dato, raiz);
+            insert(root->right, data, root);
         }
     }
 }
 
-Nodo *crear(int dato, Nodo *padre)
+Node *create(int data, Node *father)
 {
-    Nodo *nuevoNodo = new Nodo();
+    Node *newNode = new Node();
 
-    nuevoNodo->dato = dato;
-    nuevoNodo->padre = padre;
-    nuevoNodo->derecha = NULL;
-    nuevoNodo->izquierda = NULL;
+    newNode->data = data;
+    newNode->father = father;
+    newNode->right = NULL;
+    newNode->left = NULL;
 
-    return nuevoNodo;
+    return newNode;
 }
 
-void mostrarNodo(Nodo *raiz, int contador)
+void show(Node *root, int count)
 {
-    if (!raiz)
+    if (!root)
     {
         return;
     }
     else
     {
-        mostrarNodo(raiz->derecha, contador + 1);
+        show(root->right, count + 1);
 
-        for (int i = 0; i < contador; i++)
+        for (int i = 0; i < count; i++)
         {
             printf("   ");
         }
+        printf("%d\n", root->data);
 
-        printf("%d\n", raiz->dato);
-        mostrarNodo(raiz->izquierda, contador + 1);
+        show(root->left, count + 1);
     }
 }
 
-Nodo *busquedaNodo(Nodo *raiz, int dato)
+Node *search(Node *root, int data)
 {
-    if (!raiz)
+    if (!root)
     {
         return NULL;
     }
-    else if (raiz->dato == dato)
+    else if (root->data == data)
     {
-        return raiz;
+        return root;
     }
-    else if (dato < raiz->dato)
+    else if (data < root->data)
     {
-        return busquedaNodo(raiz->izquierda, dato);
-    }
-    else
-    {
-        return busquedaNodo(raiz->derecha, dato);
-    }
-}
-
-void eliminarNodo(Nodo *raiz, int dato)
-{
-    Nodo *encontrado;
-    Nodo *padre;
-    Nodo *derecha;
-    Nodo *izquierda;
-
-    encontrado = busquedaNodo(raiz, dato);
-
-    if (!encontrado->derecha && !encontrado->izquierda)
-    {
-        padre = encontrado->padre;
-
-        if (padre->derecha == encontrado)
-        {
-            padre->derecha = NULL;
-        }
-        else
-        {
-            padre->izquierda = NULL;
-        }
-    }
-    else if (encontrado->derecha && encontrado->izquierda)
-    {
-        padre = encontrado->padre;
-    }
-    else if (encontrado->derecha)
-    {
-        derecha = encontrado->derecha;
-        padre = encontrado->padre;
-
-        if (padre->derecha == encontrado)
-        {
-            padre->derecha = derecha;
-        }
-        else
-        {
-            padre->izquierda = derecha;
-        }
+        return search(root->left, data);
     }
     else
     {
-        izquierda = encontrado->izquierda;
-        padre = encontrado->padre;
+        return search(root->right, data);
+    }
+}
 
-        if (padre->derecha == encontrado)
+void remove(Node *node)
+{
+    if (!node->right && !node->left)
+    {
+        if (node->father)
         {
-            padre->derecha = izquierda;
+            if (node->father->left == node)
+            {
+                node->father->left = NULL;
+            }
+            else if (node->father->right == node)
+            {
+                node->father->right = NULL;
+            }
         }
         else
         {
-            padre->izquierda = izquierda;
+            node = NULL;
         }
     }
+    else if (node->right && node->left)
+    {
+        Node *leftNode = foundLeft(node->right);
 
-    free(encontrado);
+        node->data = leftNode->data;
+
+        remove(leftNode);
+    }
+    else
+    {
+        Node *currentSon = node->left ? node->left : node->right;
+
+        if (node->father)
+        {
+            if (node->father->left == node)
+            {
+                node->father->left = currentSon;
+            }
+            else
+            {
+                node->father->right = currentSon;
+            }
+
+            currentSon->father = node->father;
+        }
+        else
+        {
+            node->data = currentSon->data;
+
+            if (node->left)
+            {
+                node->left = currentSon->left;
+            }
+            else
+            {
+                node->right = currentSon->right;
+            }
+        }
+    }
 }
 
-void preOrden(Nodo *raiz)
+Node *foundLeft(Node *node)
 {
-    if (!raiz)
+    if (node->left)
+    {
+        return foundLeft(node->left);
+    }
+
+    return node;
+}
+
+void preOrder(Node *root)
+{
+    if (!root)
     {
         return;
     }
     else
     {
-        printf("%d\t<< - >>\t");
-        preOrden(raiz->izquierda);
-        preOrden(raiz->derecha);
+        printf(" %d << - >>", root->data);
+        preOrder(root->left);
+        preOrder(root->right);
     }
 }
 
-void inOrden(Nodo *raiz)
+void inOrder(Node *root)
 {
-    if (!raiz)
+    if (!root)
     {
         return;
     }
     else
     {
-        preOrden(raiz->izquierda);
-        printf("%d\t<< - >>\t");
-        preOrden(raiz->derecha);
+        preOrder(root->left);
+        printf(" %d << - >>", root->data);
+        preOrder(root->right);
     }
 }
 
-void postOrden(Nodo *raiz)
+void postOrder(Node *root)
 {
-    if (!raiz)
+    if (!root)
     {
         return;
     }
     else
     {
-        preOrden(raiz->izquierda);
-        preOrden(raiz->derecha);
-        printf("%d\t<< - >>\t");
+        preOrder(root->left);
+        preOrder(root->right);
+        printf(" %d << - >>", root->data);
     }
 }
 
 /*
-bool comparar(Nodo *raiz_1, Nodo *raiz_2){
-	if(raiz_1 == raiz_2)
+bool compare(Node *root_1, Node *root_2){
+	if(root_1 == root_2)
     {
 		return true;
 	}
-    if(raiz_1 == NULL || raiz_2 == NULL)
+    if(root_1 == NULL || root_2 == NULL)
     {
 		return false;
     }
-	return (raiz_1->dato == raiz_2->dato && comparar(raiz_1->derecha, raiz_2->derecha) && comparar(raiz_1->izquierda, raiz_2->izquierda));
+	return (root_1->data == root_2->data && compare(root_1->right, root_2->right) && compare(root_1->left, root_2->left));
 }
 */
+
+void error()
+{
+    printf("\nWrong data, please try again.\n");
+    system("read -p 'Press Enter to continue...' var");
+    system("clear");
+}
