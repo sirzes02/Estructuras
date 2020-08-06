@@ -10,9 +10,7 @@ struct Node
     Node *left;
 };
 
-void menu();
 void insert(Node *&, int, Node *);
-Node *create(int, Node *);
 void show(Node *, int);
 void remove(Node *);
 Node *foundLeft(Node *);
@@ -24,12 +22,6 @@ void postOrder(Node *);
 void error();
 
 int main(void)
-{
-    menu();
-    return EXIT_SUCCESS;
-}
-
-void menu()
 {
     Node *root = NULL;
     bool flag;
@@ -59,6 +51,7 @@ void menu()
             printf("\nInsert new element:\n");
             scanf("%d", &data);
 
+            // If doesn't exist a node with this data
             if (!search(root, data))
             {
                 insert(root, data, NULL);
@@ -70,56 +63,112 @@ void menu()
 
             break;
         case 2:
-            show(root, 0);
-
-            break;
-        case 3:
-            printf("\nInsert element to remove:\n");
-            scanf("%d", &data);
-
-            // This would be the best way, but i have a problem... jeje
-            //Node *toRemove = search(root, data);
-
-            if (search(root, data))
+            // If the tree isn't empty
+            if (root)
             {
-                remove(search(root, data));
+                show(root, 0);
             }
             else
             {
-                error();
+                printf("The tree is empty.\n\n");
+            }
+
+            break;
+        case 3:
+            // If the tree isn't empty
+            if (root)
+            {
+                printf("\nInsert element to remove:\n");
+                scanf("%d", &data);
+
+                // This would be the best way, but i have a problem... jeje
+                //Node *toRemove = search(root, data);
+
+                if (search(root, data))
+                {
+                    remove(search(root, data));
+                }
+                else
+                {
+                    error();
+                }
+            }
+            else
+            {
+                printf("The tree is empty.\n\n");
             }
 
             break;
         case 4:
-            preOrder(root);
+            // If the tree isn't empty
+            if (root)
+            {
+                preOrder(root);
+            }
+            else
+            {
+                printf("The tree is empty.\n\n");
+            }
 
             break;
         case 5:
-            inOrder(root);
+            // If the tree isn't empty
+            if (root)
+            {
+                inOrder(root);
+            }
+            else
+            {
+                printf("The tree is empty.\n\n");
+            }
 
             break;
         case 6:
-            postOrder(root);
+            // If the tree isn't empty
+            if (root)
+            {
+                postOrder(root);
+            }
+            else
+            {
+                printf("The tree is empty.\n\n");
+            }
 
             break;
         case 7:
             return;
         default:
-            printf("\nERROR...");
+            printf("\nWrong data, please try again.\n");
         }
 
         system("read -p 'Press Enter to continue...' var");
     } while (option != 7);
+
+    return EXIT_SUCCESS;
 }
 
 void insert(Node *&root, int data, Node *father)
 {
+    /*
+        this proccess depends of the node's data-number.  
+        You have to know if the data-number of the node that you want to save is lowero higher than current node,
+        don't forget that these functions are recursive, so, if the number is lower, you have to go to the current's left node ,
+        and repit until find a null, then, save the new node there; if the number is higher, is the same thing but to the right.
+    */
+
+    // If the node doesn't exists
     if (!root)
     {
-        root = create(data, father);
+        Node *newNode = new Node();
+
+        newNode->data = data;
+        newNode->father = father;
+
+        root = newNode;
     }
     else
     {
+        // If data is lower than current node
         if (data < root->data)
         {
             insert(root->left, data, root);
@@ -131,20 +180,9 @@ void insert(Node *&root, int data, Node *father)
     }
 }
 
-Node *create(int data, Node *father)
-{
-    Node *newNode = new Node();
-
-    newNode->data = data;
-    newNode->father = father;
-    newNode->right = NULL;
-    newNode->left = NULL;
-
-    return newNode;
-}
-
 void show(Node *root, int count)
 {
+    // If the node doesn't exists
     if (!root)
     {
         return;
@@ -165,14 +203,17 @@ void show(Node *root, int count)
 
 Node *search(Node *root, int data)
 {
+    // If the node doesn't exists
     if (!root)
     {
         return NULL;
     }
+    // If the data of the current node is equals to data
     else if (root->data == data)
     {
         return root;
     }
+    // If the data of the current node is lower than data
     else if (data < root->data)
     {
         return search(root->left, data);
@@ -185,15 +226,22 @@ Node *search(Node *root, int data)
 
 void remove(Node *node)
 {
+    // If the node has no children
     if (!node->right && !node->left)
     {
+        /*
+            Just change the parent pointer to null. If the node is the root, change it to null.
+        */
+
+        // If the node has a father (Not is the root)
         if (node->father)
         {
+            // If the node's left child is the node
             if (node->father->left == node)
             {
                 node->father->left = NULL;
             }
-            else if (node->father->right == node)
+            else
             {
                 node->father->right = NULL;
             }
@@ -203,20 +251,35 @@ void remove(Node *node)
             node = NULL;
         }
     }
+    // If the node has children
     else if (node->right && node->left)
     {
-        Node *leftNode = foundLeft(node->right);
+        /*
+            Finds the leftmost node of the current node's right child, change the data of the current node with the data of the leftmost,
+            call again the function remove but this time send the leftmost.
+        */
 
-        node->data = leftNode->data;
+        // Call function to find the last node to the left of the node's right child
+        Node *leftmost = foundLeft(node->right);
 
-        remove(leftNode);
+        node->data = leftmost->data;
+
+        remove(leftmost);
     }
     else
     {
+        /*
+            Change the parent's pointers with the current node's children.
+            This depends if the node that exist is the left or the right. Respect the hierarchy.
+        */
+
+        // CurrentSon depends of the child that exists
         Node *currentSon = node->left ? node->left : node->right;
 
+        // If the node isn't the root
         if (node->father)
         {
+            // If the node's left child is the node
             if (node->father->left == node)
             {
                 node->father->left = currentSon;
