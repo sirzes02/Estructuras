@@ -1,8 +1,9 @@
 *
+!c++
+!c++/arboles
+!c++/grafos
+!c++/listas
 
-!c++/
-!kt/
-
+!*.h
 !*.cpp
-!*.kt
 !.gitignore
