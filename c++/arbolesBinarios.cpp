@@ -40,7 +40,7 @@ int main(void)
         printf("5. Show in-order.\n");
         printf("6. Show post-order.\n");
         printf("7. Exit.\n");
-        printf("Escoja:\n");
+        printf("Choose one:\n");
         scanf("%hi", &option);
 
         system("clear");
