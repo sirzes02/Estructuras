@@ -18,7 +18,6 @@ void insert(char[24]);
 void show(short);
 void update(char[24]);
 void remove(char[24]);
-void error();
 Node *search(char[24]);
 
 // Functions
@@ -213,14 +212,12 @@ void remove(char aux[24])
 		else if (searchPerson->next && !searchPerson->before)
 		{
 			// If the Node is the firts one
-			searchPerson = head;
 			head = head->next;
 			head->before = NULL;
 		}
 		else if (!searchPerson->next && searchPerson->before)
 		{
 			// If the Node is the last one
-			searchPerson = tile;
 			tile = tile->before;
 			tile->next = NULL;
 		}
@@ -237,13 +234,6 @@ void remove(char aux[24])
 	{
 		printf("Exist no one person with the id %s.\n\n", aux);
 	}
-}
-
-void error()
-{
-	printf("\nWrong data, please try again.\n");
-	system("read -p 'Press Enter to continue...' var");
-	system("clear");
 }
 
 Node *search(char auxId[24])

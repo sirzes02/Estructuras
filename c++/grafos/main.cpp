@@ -42,7 +42,7 @@ int main()
     {
         system("clear");
 
-        cout << "1. Insert Vertex" << endl;
+        cout << "\n1. Insert Vertex" << endl;
         cout << "2. Insert Edge" << endl;
         cout << "3. Adjacent list" << endl;
         cout << "4. Size" << endl;

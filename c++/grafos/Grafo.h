@@ -7,6 +7,8 @@
 
 using namespace std;
 
+//HI
+
 class Edge;
 
 class Vertex
@@ -129,7 +131,7 @@ void Graph::insertEdge(Vertex *origin, Vertex *destiny, int weight)
     }
     else
     {
-        while (aux->next != NULL)
+        while (aux->next)
         {
             aux = aux->next;
         }
@@ -151,8 +153,10 @@ void Graph::adjacencyList()
 
         while (aristaAux)
         {
-            cout << aristaAux->adjacent->name << "->";
-
+            if (aristaAux->adjacent)
+            {
+                cout << aristaAux->adjacent->name << "->";
+            }
             aristaAux = aristaAux->next;
         }
 
@@ -283,10 +287,11 @@ void Graph::widthtravel(Vertex *origin)
             if (*i == current)
             {
                 flag = true;
+                break;
             }
         }
 
-        if (!flag)
+        if (!flag && current)
         {
             cout << current->name << ", ";
             currentList.push_back(current);
@@ -302,6 +307,7 @@ void Graph::widthtravel(Vertex *origin)
                     if (aux->adjacent == *i)
                     {
                         flag2 = true;
+                        break;
                     }
                 }
 
@@ -338,10 +344,11 @@ void Graph::depthTravel(Vertex *origin)
             if (*i == current)
             {
                 flag = true;
+                break;
             }
         }
 
-        if (!flag)
+        if (!flag && current)
         {
             cout << current->name << ", ";
             currentList.push_back(current);
@@ -357,6 +364,7 @@ void Graph::depthTravel(Vertex *origin)
                     if (aux->adjacent == *i)
                     {
                         flag2 = true;
+                        break;
                     }
                 }
 
@@ -398,6 +406,7 @@ void Graph::firstWidth(Vertex *origin, Vertex *destiny)
             if (*i == current)
             {
                 flag = true;
+                break;
             }
         }
 
@@ -439,10 +448,11 @@ void Graph::firstWidth(Vertex *origin, Vertex *destiny)
                     if (aux->adjacent == *i)
                     {
                         flag2 = true;
+                        break;
                     }
                 }
 
-                if (!flag)
+                if (!flag2)
                 {
                     currentQueu.push(aux->adjacent);
                     currentStack.push(VertexVertex(current, aux->adjacent));
@@ -486,6 +496,7 @@ void Graph::firstDepth(Vertex *origin, Vertex *destiny)
             if (currentVertex == *i)
             {
                 flag = true;
+                break;
             }
         }
 
@@ -534,6 +545,8 @@ void Graph::firstDepth(Vertex *origin, Vertex *destiny)
                     currentStack.push(aux->adjacent);
                     currentStackPar.push(VertexVertex(currentVertex, aux->adjacent));
                 }
+
+                aux = aux->next;
             }
         }
     }

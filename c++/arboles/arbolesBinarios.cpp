@@ -136,7 +136,7 @@ int main(void)
 
             break;
         case 7:
-            return;
+            return 0;
         default:
             printf("\nWrong data, please try again.\n");
         }
@@ -208,7 +208,7 @@ Node *search(Node *root, int data)
     {
         return NULL;
     }
-    // If the data of the current node is equals to data
+    // If the data of the current nthisode is equals to data
     else if (root->data == data)
     {
         return root;
@@ -339,9 +339,9 @@ void inOrder(Node *root)
     }
     else
     {
-        preOrder(root->left);
+        inOrder(root->left);
         printf(" %d << - >>", root->data);
-        preOrder(root->right);
+        inOrder(root->right);
     }
 }
 
@@ -353,8 +353,8 @@ void postOrder(Node *root)
     }
     else
     {
-        preOrder(root->left);
-        preOrder(root->right);
+        postOrder(root->left);
+        postOrder(root->right);
         printf(" %d << - >>", root->data);
     }
 }
